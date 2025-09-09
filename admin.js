@@ -15,6 +15,7 @@ const firebaseConfig = {
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage(); // Inicializa o Storage
 const productsCollection = db.collection("products");
 
 // =================================================================================
@@ -36,7 +37,10 @@ const productPrice = document.getElementById('product-price');
 const productRating = document.getElementById('product-rating');
 const productReviews = document.getElementById('product-reviews');
 const productDescription = document.getElementById('product-description');
-const productImage = document.getElementById('product-image');
+const productImageUpload = document.getElementById('product-image-upload');
+const imagePreview = document.getElementById('image-preview');
+const productImageUrl = document.getElementById('product-image-url');
+const uploadStatus = document.getElementById('upload-status');
 const productFeatured = document.getElementById('product-featured');
 const contactWhatsapp = document.getElementById('contact-whatsapp');
 const contactFacebook = document.getElementById('contact-facebook');
@@ -63,13 +67,16 @@ function loadProducts() {
                 <tbody>
         `;
         if (snapshot.empty) {
-            html += `<tr><td colspan="4" class="text-center p-6">Nenhum produto cadastrado.</td></tr>`;
+            html += `<tr><td colspan="4" class="text-center p-6">Nenhum produto cadastrado. Clique em 'Adicionar' para começar.</td></tr>`;
         } else {
             snapshot.forEach(doc => {
                 const product = doc.data();
                 html += `
                     <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-6 py-4 font-medium text-gray-900">${product.name}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 flex items-center">
+                            <img src="${product.image || 'https://placehold.co/40x40'}" class="w-8 h-8 rounded-full mr-3 object-cover">
+                            ${product.name}
+                        </td>
                         <td class="px-6 py-4">${product.category}</td>
                         <td class="px-6 py-4">${product.price}</td>
                         <td class="px-6 py-4 flex gap-4">
@@ -97,49 +104,90 @@ cancelBtn.addEventListener('click', () => {
     resetForm();
 });
 
+// Mostra preview da imagem selecionada
+productImageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.src = event.target.result;
+            imagePreview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+
 // Reseta o formulário
 function resetForm() {
     productForm.reset();
     productIdField.value = '';
+    productImageUrl.value = '';
+    imagePreview.src = '';
+    imagePreview.classList.add('hidden');
+    uploadStatus.textContent = '';
+    productForm.querySelector('button[type="submit"]').disabled = false;
 }
 
 // Salva (cria ou atualiza) um produto
 productForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = productIdField.value;
+    const submitButton = productForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    uploadStatus.textContent = 'Salvando...';
 
-    const productData = {
-        name: productName.value,
-        company: productCompany.value,
-        category: productCategory.value,
-        price: productPrice.value,
-        description: productDescription.value,
-        image: productImage.value,
-        type: document.querySelector('input[name="type"]:checked').value,
-        featured: productFeatured.checked,
-        rating: parseFloat(productRating.value) || 0,
-        reviews: parseInt(productReviews.value) || 0,
-        contact: {
-            whatsapp: contactWhatsapp.value,
-            facebook: contactFacebook.value,
-            instagram: contactInstagram.value,
-            website: contactWebsite.value
-        }
-    };
+    let imageUrl = productImageUrl.value; // Pega a URL da imagem existente, se houver
+    const file = productImageUpload.files[0];
 
     try {
+        // Se um novo arquivo foi selecionado, faz o upload
+        if (file) {
+            uploadStatus.textContent = 'Enviando imagem...';
+            const fileName = `${Date.now()}-${file.name}`;
+            const fileRef = storage.ref(`products/${fileName}`);
+            await fileRef.put(file);
+            imageUrl = await fileRef.getDownloadURL();
+            uploadStatus.textContent = 'Imagem enviada!';
+        }
+
+        if (!imageUrl) {
+            throw new Error("A imagem é obrigatória.");
+        }
+
+        const productData = {
+            name: productName.value,
+            company: productCompany.value,
+            category: productCategory.value,
+            price: productPrice.value,
+            description: productDescription.value,
+            image: imageUrl, // Usa a nova URL ou a antiga
+            type: document.querySelector('input[name="type"]:checked').value,
+            featured: productFeatured.checked,
+            rating: parseFloat(productRating.value) || 0,
+            reviews: parseInt(productReviews.value) || 0,
+            contact: {
+                whatsapp: contactWhatsapp.value,
+                facebook: contactFacebook.value,
+                instagram: contactInstagram.value,
+                website: contactWebsite.value
+            }
+        };
+
         if (id) {
-            // Atualiza
             await productsCollection.doc(id).update(productData);
         } else {
-            // Cria
             await productsCollection.add(productData);
         }
+
         productForm.classList.add('hidden');
         resetForm();
+
     } catch (error) {
         console.error("Erro ao salvar produto: ", error);
-        alert("Ocorreu um erro ao salvar. Tente novamente.");
+        alert(`Ocorreu um erro ao salvar: ${error.message}`);
+        uploadStatus.textContent = 'Erro ao salvar.';
+        submitButton.disabled = false;
     }
 });
 
@@ -150,13 +198,20 @@ window.editProduct = async function(id) {
         if (!doc.exists) return;
         const product = doc.data();
 
+        resetForm();
         productIdField.value = id;
         productName.value = product.name;
         productCompany.value = product.company;
         productCategory.value = product.category;
         productPrice.value = product.price;
         productDescription.value = product.description;
-        productImage.value = product.image;
+        
+        if(product.image) {
+            productImageUrl.value = product.image; // Armazena URL atual
+            imagePreview.src = product.image;
+            imagePreview.classList.remove('hidden');
+        }
+
         document.querySelector(`input[name="type"][value="${product.type}"]`).checked = true;
         productFeatured.checked = product.featured;
         productRating.value = product.rating;
@@ -175,8 +230,9 @@ window.editProduct = async function(id) {
 
 // Deleta um produto
 window.deleteProduct = async function(id) {
-    if (confirm("Tem certeza que deseja excluir este item?")) {
+    if (confirm("Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.")) {
         try {
+            // Opcional: deletar a imagem do Storage também (mais complexo)
             await productsCollection.doc(id).delete();
         } catch (error) {
             console.error("Erro ao excluir produto: ", error);
@@ -188,7 +244,5 @@ window.deleteProduct = async function(id) {
 // =================================================================================
 // 4. INICIALIZAÇÃO
 // =================================================================================
-
-// Carrega os produtos assim que a página é aberta
 loadProducts();
 

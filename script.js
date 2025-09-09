@@ -115,7 +115,7 @@ function initSwiper(selector) {
         spaceBetween: 30,
         pagination: { el: `${selector} .swiper-pagination`, clickable: true },
         navigation: { nextEl: `${selector} .swiper-button-next`, prevEl: `${selector} .swiper-button-prev` },
-        breakpoints: { 640: { slidesView: 2 }, 1024: { slidesPerView: 3 }, 1280: { slidesPerView: 4 } }
+        breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 }, 1280: { slidesPerView: 4 } }
     });
 }
 

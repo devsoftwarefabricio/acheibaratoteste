@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - AcheiBarato Morrinhos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100" style="font-family: 'Inter', sans-serif;">
+
+    <!-- PAINEL DE CONTROLE (DASHBOARD) -->
+    <div id="dashboard-container">
+        <header class="bg-white shadow-sm">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <h1 class="text-xl font-bold text-gray-800">Painel de Controle</h1>
+                <a href="index.html" class="text-sm text-blue-600 hover:underline">Ver Site Principal</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-6">
+            <!-- BOTÃO E FORMULÁRIO DE ADIÇÃO -->
+            <div class="mb-6">
+                <button id="add-product-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>Adicionar Novo Produto/Serviço
+                </button>
+            </div>
+
+            <form id="product-form" class="hidden p-6 mb-6 bg-white rounded-lg shadow space-y-4">
+                <h2 id="form-title" class="text-lg font-semibold text-gray-800">Adicionar Novo Item</h2>
+                <input type="hidden" id="product-id">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input id="product-name" type="text" placeholder="Nome do Produto/Serviço" class="w-full p-2 border rounded" required>
+                    <input id="product-company" type="text" placeholder="Nome da sua Empresa" class="w-full p-2 border rounded" required>
+                    <input id="product-category" type="text" placeholder="Categoria (ex: Alimentação)" class="w-full p-2 border rounded" required>
+                    <input id="product-price" type="text" placeholder="Preço (ex: 189.90 ou 'Cotação')" class="w-full p-2 border rounded" required>
+                    <input id="product-rating" type="number" step="0.1" min="0" max="5" placeholder="Avaliação (0 a 5)" class="w-full p-2 border rounded">
+                    <input id="product-reviews" type="number" min="0" placeholder="Nº de Avaliações" class="w-full p-2 border rounded">
+                </div>
+                 <textarea id="product-description" placeholder="Descrição curta" class="w-full p-2 border rounded" required></textarea>
+                 <input id="product-image" type="text" placeholder="URL da Imagem (ex: https://...)" class="w-full p-2 border rounded" required>
+                 
+                 <div class="flex items-center space-x-8">
+                    <label class="font-medium">Tipo:</label>
+                    <label><input type="radio" name="type" value="produto" checked> Produto</label>
+                    <label><input type="radio" name="type" value="serviço"> Serviço</label>
+                    <label class="flex items-center"><input id="product-featured" type="checkbox" class="mr-2"> Destaque?</label>
+                 </div>
+                 
+                 <h3 class="font-semibold pt-2">Contatos:</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input id="contact-whatsapp" type="text" placeholder="WhatsApp (somente números com DDD)" class="w-full p-2 border rounded">
+                    <input id="contact-facebook" type="text" placeholder="URL do Facebook" class="w-full p-2 border rounded">
+                    <input id="contact-instagram" type="text" placeholder="URL do Instagram" class="w-full p-2 border rounded">
+                    <input id="contact-website" type="text" placeholder="URL do seu Website" class="w-full p-2 border rounded">
+                 </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">Salvar</button>
+                    <button type="button" id="cancel-btn" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600">Cancelar</button>
+                </div>
+            </form>
+
+            <!-- LISTA DE PRODUTOS -->
+            <div id="product-list" class="bg-white rounded-lg shadow overflow-x-auto">
+                <!-- Os produtos serão inseridos aqui -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- JS do Painel -->
+    <script src="admin.js"></script>
+
+</body>
+</html>
+

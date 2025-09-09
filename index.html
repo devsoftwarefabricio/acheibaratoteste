@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcheiBarato Morrinhos - Compare Preços e Economize</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (Ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS do Swiper (Carrossel) -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+    <!-- Seu CSS Personalizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800"><i class="fas fa-search-dollar text-blue-600"></i> AcheiBarato Morrinhos</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="admin.html" class="bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Área da Empresa</a>
+                <a href="#" target="_blank" title="Siga-nos no Instagram" class="text-gray-500 hover:text-pink-500 transition-colors">
+                    <i class="fab fa-instagram fa-lg"></i>
+                </a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-800 focus:outline-none">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Seção Principal (Hero) -->
+    <section class="hero-bg text-white py-20 md:py-32">
+        <div class="container mx-auto text-center px-6">
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-4">Compare preços, economize tempo e dinheiro.</h1>
+            <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">A plataforma definitiva para encontrar os melhores produtos, serviços e fornecedores em um só lugar.</p>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal -->
+    <main class="container mx-auto px-6 py-12">
+        
+        <!-- Carregando... -->
+        <div id="loading" class="text-center py-16">
+            <i class="fas fa-spinner fa-spin fa-3x text-blue-600"></i>
+            <p class="mt-4 text-gray-600">Carregando ofertas...</p>
+        </div>
+
+        <!-- Container para os Carrosséis Padrão -->
+        <div id="defaultCarousels" class="hidden">
+            <!-- Destaques -->
+            <section id="destaques-section" class="mb-12 hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-star text-yellow-400 mr-3"></i> Destaques da Semana</h2>
+                <div class="swiper" id="destaquesSwiper">
+                    <div class="swiper-wrapper" id="destaquesWrapper"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            <!-- Produtos -->
+            <section id="produtos-section" class="mb-12 hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-shopping-basket text-blue-600 mr-3"></i> Produtos</h2>
+                 <div class="swiper" id="produtosSwiper">
+                    <div class="swiper-wrapper" id="produtosWrapper"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            <!-- Serviços -->
+            <section id="servicos-section" class="hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-tools text-gray-700 mr-3"></i> Serviços</h2>
+                 <div class="swiper" id="servicosSwiper">
+                    <div class="swiper-wrapper" id="servicosWrapper"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+    
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2024 AcheiBarato Morrinhos. Todos os direitos reservados.</p>
+            <p class="text-sm text-gray-400 mt-2">Desenvolvido por <a href="#" class="underline hover:text-blue-400">Seu Nome Aqui</a></p>
+        </div>
+    </footer>
+
+    <!-- Swiper JS (Carrossel) -->
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <!-- Seu JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
+
